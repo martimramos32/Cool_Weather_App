@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cool WeatherAPP</string>
+    <string name="label_latitude">Latitude</string>
+    <string name="label_longitude">Longitude</string>
+    <string name="label_pressure">Pressão Atmosférica</string>
+    <string name="label_wind_dir">Direção do Vento</string>
+    <string name="label_wind_speed">Velocidade do Vento</string>
+    <string name="label_temp">Temperatura</string>
+    <string name="label_time">Hora</string>
+    <string name="button_update">Atualizar</string>
+</resources>
