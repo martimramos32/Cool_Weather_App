@@ -5,6 +5,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.net.URL
+import java.io.InputStreamReader
+import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
     // Define se é dia ou noite manualmente
