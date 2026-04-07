@@ -44,5 +44,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.8.9") // ferramenta GSON necessária para traduzir os ficheiros retornados pela API para texto
+    implementation("com.google.android.gms:play-services-location:21.0.1") //por defeito, o android studio não tem a ferramenta de localização da Google instalada portanto temos de adicionar esta depende para que possa utilizar esta ferramenta
 }

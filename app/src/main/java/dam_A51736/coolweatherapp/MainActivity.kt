@@ -10,10 +10,16 @@ import androidx.core.view.WindowInsetsCompat
 import java.net.URL
 import java.io.InputStreamReader
 import com.google.gson.Gson
-
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 class MainActivity : AppCompatActivity() {
-    // Define se é dia ou noite manualmente
-    var day = true
+    var day = true // Define se é dia ou noite (true = dia, false = noite)
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // A escolha do tema tem de acontecer ANTES das instruções super.onCreate e setContentView
