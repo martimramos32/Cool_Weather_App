@@ -19,7 +19,9 @@ import com.google.android.gms.location.LocationServices
 class MainActivity : AppCompatActivity() {
     var day = true // Define se é dia ou noite (true = dia, false = noite)
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var gps: FusedLocationProviderClient //esta variavel recebe um contrato lateinit, que significa que vai ser inicializada depois mais à frente no código. A abordagem do uso do campo NULL também seria possivel mas é menos eficiente pois iria exigir o uso do "?" todas as vezes ao usar esta variavel.
+
+    @SuppressLint("DiscouragedApi")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // A escolha do tema tem de acontecer ANTES das instruções super.onCreate e setContentView
@@ -62,6 +64,11 @@ class MainActivity : AppCompatActivity() {
             // Chama a função que faz a chamada à API e inicia-a, pois se trata de uma thread
             fetchWeatherData(lat, lon).start()
         }
+
+        // Prepara a ferramenta de GPS
+        gps = LocationServices.getFusedLocationProviderClient(this)
+        // Arranca a função para descobrir onde estamos
+        obterLocalizacao()
     }
 
     private fun WeatherAPI_Call(lat: Float, long: Float): WeatherData {
@@ -133,6 +140,34 @@ class MainActivity : AppCompatActivity() {
             if (resID != 0) { // Só aplica se a imagem existir mesmo na pasta drawable
                 val drawable = this.getDrawable(resID)
                 weatherImage.setImageDrawable(drawable)
+            }
+        }
+    }
+
+    private fun obterLocalizacao() {
+        // 1. Verifica se o utilizador já deu permissão
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Se não deu, faz aparecer a janela no ecrã a pedir
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100)
+            return
+        }
+
+        // 2. Se já tem permissão, vai buscar a última localização conhecida
+        gps.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                // Descobriu onde estamos!
+                val lat = location.latitude.toFloat()
+                val lon = location.longitude.toFloat()
+
+                // Atualiza os números nas caixas de texto do ecrã
+                findViewById<EditText>(R.id.editLatitude).setText(lat.toString())
+                findViewById<EditText>(R.id.editLongitude).setText(lon.toString())
+
+                // Pede a meteorologia para este novo local
+                fetchWeatherData(lat, lon).start()
+            } else {
+                // Se o GPS do telemóvel estiver desligado, usa Lisboa por defeito para não ficar vazio
+                fetchWeatherData(38.76f, -9.12f).start()
             }
         }
     }
