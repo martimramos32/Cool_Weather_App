@@ -1,6 +1,8 @@
 package dam_A51736.coolweatherapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -58,6 +60,59 @@ class MainActivity : AppCompatActivity() {
         url.openStream().use {
             val request = Gson().fromJson(InputStreamReader(it, "UTF-8"), WeatherData::class.java)
             return request
+        }
+    }
+
+    private fun fetchWeatherData(lat: Float, long: Float) : Thread {
+        return Thread {
+            val weather = WeatherAPI_Call(lat,long)
+            updateUI(weather)
+        }
+    }
+
+    @SuppressLint("DiscouragedApi")
+    private fun updateUI(request: WeatherData) {
+        runOnUiThread {
+            // Preencher os campos com os valores recebidos da chamada à AP
+            val weatherImage: ImageView = findViewById(R.id.weatherImage)
+            val pressure: TextView = findViewById(R.id.pressureValue)
+            val tempValue: TextView = findViewById(R.id.temperatureValue)
+            val windSpeedValue: TextView = findViewById(R.id.windSpeedValue)
+            val windDirValue: TextView = findViewById(R.id.windDirValue)
+            val timeValue: TextView = findViewById(R.id.timeValue)
+
+            pressure.text = request.hourly.pressure_msl.get(12).toString() + " hPa"
+            tempValue.text = "${request.current_weather.temperature} °C"
+            windSpeedValue.text = "${request.current_weather.windspeed} km/h"
+            windDirValue.text = "${request.current_weather.winddirection}º"
+            timeValue.text = request.current_weather.time.replace("T", " ")
+
+            val mapt = getWeatherCodeMap() //Criamos o mapa que contém as informações das determinadas correspondencias (code -> imagem)
+            val wCode = mapt.get(request.current_weather.weathercode) //recebe o determinado codigo
+
+            val wImage = when (wCode) { //quando um determinado codigo é recebido precisamos de apresentar no display a imagem correta para esse mesmo codigo
+                //Se for um destes 3 possiveis estados de tempo, entra no bloco seguinte e define a imagem
+                WMO_WeatherCode.CLEAR_SKY,
+                WMO_WeatherCode.MAINLY_CLEAR,
+                WMO_WeatherCode.PARTLY_CLOUDY -> {
+                    //queremos apenas o prefixo do nome da imagem correspondente ao codigo portanto queremos remover a parte "_day" ou "_night"
+                    val base = wCode.image.replace("_day", "").replace("_night", "")
+                    //Se a palavra for (clear) adiciona-lhe a palavra "_day" no fim caso contrário adiciona "_night"
+                    if (day) base + "_day" else base + "_night"
+                }
+                else -> wCode?.image //se nao for nenhum destes 3 estados, como, por exemplo, nevar, chover ou nevoeiro, apenas retorna a imagem correspondente ao codigo fornecido pela API
+            }
+
+            val res = getResources()
+            // Imagem de segurança caso a conexão à internet falhe
+            weatherImage.setImageResource(R.drawable.fog)
+
+            // Carregar a imagem final correta
+            val resID = res.getIdentifier(wImage, "drawable", packageName)
+            if (resID != 0) { // Só aplica se a imagem existir mesmo na pasta drawable
+                val drawable = this.getDrawable(resID)
+                weatherImage.setImageDrawable(drawable)
+            }
         }
     }
 }
