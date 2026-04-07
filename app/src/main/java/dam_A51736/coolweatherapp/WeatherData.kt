@@ -1,5 +1,6 @@
 package dam_A51736.coolweatherapp
 
+//Classe responsável por receber os dados principais da API
 data class WeatherData(
     var latitude: String,
     var longitude: String,
@@ -8,6 +9,7 @@ data class WeatherData(
     var hourly: Hourly
 )
 
+//Classe que guarda os detalhes específicos do tempo atual recebido pela classe WeatherData
 data class CurrentWeather(
     var windspeed: Float,
     var temperature: Float,
@@ -16,6 +18,7 @@ data class CurrentWeather(
     var time: String
 )
 
+//Classe que permite armazenar a previsão do tempo hora a hora para o resto do dia
 data class Hourly(
     var time: ArrayList<String>,
     var temperature_2m: ArrayList<Float>,
@@ -23,6 +26,7 @@ data class Hourly(
     var pressure_msl: ArrayList<Double>
 )
 
+//Lista que serve como um dicionário que liga o "code" ao nome exato da imagem que está guardada na diretoria drawable, para que mais tarde o ecrã saiba logo qual é a imagem correta a apresentar no display
 enum class WMO_WeatherCode(var code: Int, var image: String) {
     CLEAR_SKY(0, "clear_day"),
     MAINLY_CLEAR(1, "mostly_clear_day"),
@@ -55,10 +59,12 @@ enum class WMO_WeatherCode(var code: Int, var image: String) {
 }
 
 
+//Uma vez que, já existe o enumerado com as informações que receberemos da API é necessário que a aplicação saiba qual a imagem a utilizar para um determinado código, portanto precisamoas de mapear estes valores
 fun getWeatherCodeMap(): Map<Int, WMO_WeatherCode> {
-    val weatherMap = HashMap<Int, WMO_WeatherCode>()
+    val weatherMap = HashMap<Int, WMO_WeatherCode>() //Mapa que para uma determinada chave(code) retornará um determinado valor(imagem correspondente)
+    //lê todas as linhas do enumerado
     WMO_WeatherCode.values().forEach {
-        weatherMap.put(it.code, it)
+        weatherMap.put(it.code, it) //Se procurar por um determinado código, retorna essa mesmo linha completa do enumerado
     }
-    return weatherMap
+    return weatherMap //retorna um mapa completo com todas as correspondencias necessárias para todos os codigos recebidos da API
 }

@@ -41,4 +41,23 @@ class MainActivity : AppCompatActivity() {
             insets
         }
     }
+
+    private fun WeatherAPI_Call(lat: Float, long: Float): WeatherData {
+        // Prepara o endereço URL com as coordenadas escolhidas
+        val reqString = buildString {
+            append("https://api.open-meteo.com/v1/forecast?")
+            append("latitude=${lat}&longitude=${long}&")
+            append("current_weather=true&")
+            append("hourly=temperature_2m,weathercode,pressure_msl,windspeed_10m")
+        }
+
+        // Transforma o texto num endereço web "real"
+        val url = URL(reqString.toString())
+
+        // Abre a ligação, lê o texto que a internet devolve e usa o Gson para o transformar nos dados que precisamos (WeatherData)
+        url.openStream().use {
+            val request = Gson().fromJson(InputStreamReader(it, "UTF-8"), WeatherData::class.java)
+            return request
+        }
+    }
 }
