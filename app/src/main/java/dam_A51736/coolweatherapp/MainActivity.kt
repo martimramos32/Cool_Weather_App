@@ -13,7 +13,7 @@ import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
     // Define se é dia ou noite manualmente
-    var day = false
+    var day = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // A escolha do tema tem de acontecer ANTES das instruções super.onCreate e setContentView
@@ -42,6 +42,20 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Recebe os elementos da interface que serão alterados
+        val btnUpdate = findViewById<Button>(R.id.buttonUpdate) // Botão para atualizar
+        val editLat = findViewById<EditText>(R.id.editLatitude) // Caixa de texto para inserir a latitude
+        val editLon = findViewById<EditText>(R.id.editLongitude) // Caixa de texto para inserir a longitude
+
+        btnUpdate.setOnClickListener {
+            // Recolhe o texto que está nas caixas e transforma em float, pois a funçao fetchWeatherData recebe paramentros do tipo float
+            val lat = editLat.text.toString().toFloat()
+            val lon = editLon.text.toString().toFloat()
+
+            // Chama a função que faz a chamada à API e inicia-a, pois se trata de uma thread
+            fetchWeatherData(lat, lon).start()
+        }
     }
 
     private fun WeatherAPI_Call(lat: Float, long: Float): WeatherData {
@@ -50,10 +64,11 @@ class MainActivity : AppCompatActivity() {
             append("https://api.open-meteo.com/v1/forecast?")
             append("latitude=${lat}&longitude=${long}&")
             append("current_weather=true&")
+            append("timezone=auto&") //Permite que a API retorne a hora correta das coordenadas inseridas
             append("hourly=temperature_2m,weathercode,pressure_msl,windspeed_10m")
         }
 
-        // Transforma o texto num endereço web "real"
+        // Transforma o texto num endereço web
         val url = URL(reqString.toString())
 
         // Abre a ligação, lê o texto que a internet devolve e usa o Gson para o transformar nos dados que precisamos (WeatherData)
