@@ -144,31 +144,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //Função que obtém a localização do dispositivo que usa a aplicação através dos serviços da Google
     private fun obterLocalizacao() {
-        // 1. Verifica se o utilizador já deu permissão
+        // Verifica se o utilizador já deu permissão
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Se não deu, faz aparecer a janela no ecrã a pedir
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100)
             return
         }
 
-        // 2. Se já tem permissão, vai buscar a última localização conhecida
+        // Se já tem permissão, vai buscar a última localização conhecida
         gps.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-                // Descobriu onde estamos!
                 val lat = location.latitude.toFloat()
                 val lon = location.longitude.toFloat()
 
-                // Atualiza os números nas caixas de texto do ecrã
+                // Atualiza os numeros inseridos nas caixas de texto da latitude e longitude
                 findViewById<EditText>(R.id.editLatitude).setText(lat.toString())
                 findViewById<EditText>(R.id.editLongitude).setText(lon.toString())
 
-                // Pede a meteorologia para este novo local
+                // Pede a informação da meteorologia para este exato local
                 fetchWeatherData(lat, lon).start()
             } else {
-                // Se o GPS do telemóvel estiver desligado, usa Lisboa por defeito para não ficar vazio
+                // Se a localização do telemóvel estiver desligada, usa Lisboa por defeito para não ficar vazio
                 fetchWeatherData(38.76f, -9.12f).start()
             }
+        }
+    }
+
+    // Esta função é chamada automaticamente quando o utilizador clica em "Permitir" ou "Recusar" na janela
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 100 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // O utilizador disse que sim e é exibida a informaçao para aquela determinada localização
+            obterLocalizacao()
+        } else {
+            fetchWeatherData(38.76f, -9.12f).start()
         }
     }
 }
