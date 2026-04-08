@@ -6,7 +6,8 @@ data class WeatherData(
     var longitude: String,
     var timezone: String,
     var current_weather: CurrentWeather,
-    var hourly: Hourly
+    var hourly: Hourly,
+    var daily: Daily // Informação adicional do nascer e pôr do sol
 )
 
 //Classe que guarda os detalhes específicos do tempo atual recebido pela classe WeatherData
@@ -68,3 +69,9 @@ fun getWeatherCodeMap(): Map<Int, WMO_WeatherCode> {
     }
     return weatherMap //retorna um mapa completo com todas as correspondencias necessárias para todos os codigos recebidos da API
 }
+
+//Classe responsável por receber as informações de nascer e pôr do sol
+data class Daily(
+    var sunrise: ArrayList<String>,
+    var sunset: ArrayList<String>
+)
