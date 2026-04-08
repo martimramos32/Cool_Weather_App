@@ -17,7 +17,7 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 class MainActivity : AppCompatActivity() {
-    var day = true // Define se é dia ou noite manualmente (true = dia, false = noite)
+    var day = true // Define se é dia ou noite (true = dia, false = noite)
 
     private lateinit var gps: FusedLocationProviderClient //esta variavel recebe um contrato lateinit, que significa que vai ser inicializada depois mais à frente no código. A abordagem do uso do campo NULL também seria possivel mas é menos eficiente pois iria exigir o uso do "?" todas as vezes ao usar esta variavel.
 
@@ -78,7 +78,6 @@ class MainActivity : AppCompatActivity() {
             append("latitude=${lat}&longitude=${long}&")
             append("current_weather=true&")
             append("timezone=auto&") //Permite que a API retorne a hora correta das coordenadas inseridas
-            append("daily=sunrise,sunset&") //Permite que a API retorne as horas do nascer e o pôr do sol (para ser possivel mudar automaticamente a variavel day)
             append("hourly=temperature_2m,weathercode,pressure_msl,windspeed_10m")
         }
 
@@ -102,21 +101,6 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("DiscouragedApi")
     private fun updateUI(request: WeatherData) {
         runOnUiThread {
-            // Ler as horas que vieram da internet
-            val currentTime = request.current_weather.time
-            val sunriseTime = request.daily.sunrise[0] //[0] significa o valor do dia de hoje
-            val sunsetTime = request.daily.sunset[0]
-
-            // Verificar se a hora atual está entre o nascer e o pôr do sol
-            val isDayReal = currentTime >= sunriseTime && currentTime < sunsetTime
-
-            //Se a variável 'day' estiver errada em relação à realidade (uma vez que, o sistema android, desenha logo um layout antes de comunicar com a internet. se após comunicar perceber que a hora irá influenciar a mudança do tema, adapta se logo a seguir para o tema correto)
-            if (day != isDayReal) {
-                day = isDayReal // Corrigimos a variável
-                recreate() // o ecrã reinicia com o tema correto
-                return@runOnUiThread // Pára de escrever os textos porque o ecrã vai ser reconstruído
-            }
-
             // Preencher os campos com os valores recebidos da chamada à AP
             val weatherImage: ImageView = findViewById(R.id.weatherImage)
             val pressure: TextView = findViewById(R.id.pressureValue)
