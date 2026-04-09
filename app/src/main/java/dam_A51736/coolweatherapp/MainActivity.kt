@@ -24,6 +24,11 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("DiscouragedApi")
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Se a app foi recriada, vamos buscar o valor correto do dia/noite
+        if (savedInstanceState != null) {
+            day = savedInstanceState.getBoolean("isDay", true)
+        }
+
         // A escolha do tema tem de acontecer ANTES das instruções super.onCreate e setContentView
         when (resources.configuration.orientation) {
             android.content.res.Configuration.ORIENTATION_PORTRAIT -> {
@@ -67,8 +72,35 @@ class MainActivity : AppCompatActivity() {
 
         // Prepara a ferramenta de GPS
         gps = LocationServices.getFusedLocationProviderClient(this)
-        // Arranca a função para descobrir onde estamos
-        obterLocalizacao()
+
+        //Só usa o GPS se for a primeira vez que a aplicação abre
+        if (savedInstanceState == null) {
+            obterLocalizacao()
+        } else {
+            //Lê as coordenadas que foram inseridas antes de a aplicação ser recriada
+            val savedLat = savedInstanceState.getFloat("savedLat", 38.76f)
+            val savedLon = savedInstanceState.getFloat("savedLon", -9.12f)
+
+            // Pede a meteorologia com os dados guardados
+            fetchWeatherData(savedLat, savedLon).start()
+        }
+    }
+
+    //Esta função guarda o valor da varivel day antes do ecrã ser destruído
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("isDay", day)
+
+        // Vamos guardar também as coordenadas que estão nas caixas neste exato momento!
+        val editLat = findViewById<EditText>(R.id.editLatitude)
+        val editLon = findViewById<EditText>(R.id.editLongitude)
+
+        // O toFloatOrNull() protege a app caso a caixa esteja vazia
+        val latToSave = editLat.text.toString().toFloatOrNull() ?: 38.76f
+        val lonToSave = editLon.text.toString().toFloatOrNull() ?: -9.12f
+
+        outState.putFloat("savedLat", latToSave)
+        outState.putFloat("savedLon", lonToSave)
     }
 
     private fun WeatherAPI_Call(lat: Float, long: Float): WeatherData {
@@ -78,6 +110,7 @@ class MainActivity : AppCompatActivity() {
             append("latitude=${lat}&longitude=${long}&")
             append("current_weather=true&")
             append("timezone=auto&") //Permite que a API retorne a hora correta das coordenadas inseridas
+            append("daily=sunrise,sunset&") //Recebe as horas de nascer e pôr do sol
             append("hourly=temperature_2m,weathercode,pressure_msl,windspeed_10m")
         }
 
@@ -101,6 +134,20 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("DiscouragedApi")
     private fun updateUI(request: WeatherData) {
         runOnUiThread {
+
+            //Analisa a hora das coordenadas inseridas e as horas do sol(nascer e pôr)
+            val currentTime = request.current_weather.time
+            val sunriseTime = request.daily.sunrise[0]
+            val sunsetTime = request.daily.sunset[0]
+
+            val isDayReal = currentTime >= sunriseTime && currentTime < sunsetTime
+
+            if (day != isDayReal) {
+                day = isDayReal // Atualiza para o valor correto
+                recreate() // Reinicia o ecrã. Como foi dada a instrução à aplicação para guardar a varivel day, ela será reconstruida segundo esta
+                return@runOnUiThread
+            }
+
             // Preencher os campos com os valores recebidos da chamada à AP
             val weatherImage: ImageView = findViewById(R.id.weatherImage)
             val pressure: TextView = findViewById(R.id.pressureValue)
@@ -113,7 +160,7 @@ class MainActivity : AppCompatActivity() {
             tempValue.text = "${request.current_weather.temperature} °C"
             windSpeedValue.text = "${request.current_weather.windspeed} km/h"
             windDirValue.text = "${request.current_weather.winddirection}º"
-            timeValue.text = request.current_weather.time.replace("T", " ")
+            timeValue.text = currentTime.replace("T", " ")
 
             val mapt = getWeatherCodeMap() //Criamos o mapa que contém as informações das determinadas correspondencias (code -> imagem)
             val wCode = mapt.get(request.current_weather.weathercode) //recebe o determinado codigo

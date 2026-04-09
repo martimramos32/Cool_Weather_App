@@ -6,7 +6,14 @@ data class WeatherData(
     var longitude: String,
     var timezone: String,
     var current_weather: CurrentWeather,
-    var hourly: Hourly
+    var hourly: Hourly,
+    var daily: Daily //Novo campo que armazena os dados da classe Daily
+)
+
+//Nova classe que é responsável por receber os dados de nascer e pôr do sol que serão recebidos da API
+data class Daily(
+    var sunrise: ArrayList<String>,
+    var sunset: ArrayList<String>
 )
 
 //Classe que guarda os detalhes específicos do tempo atual recebido pela classe WeatherData
