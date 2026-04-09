@@ -1,5 +1,6 @@
 package dam_A51736.coolweatherapp
 
+import  androidx.appcompat.app.AppCompatActivity
 //Classe responsável por receber os dados principais da API
 data class WeatherData(
     var latitude: String,
@@ -75,3 +76,12 @@ fun getWeatherCodeMap(): Map<Int, WMO_WeatherCode> {
     }
     return weatherMap //retorna um mapa completo com todas as correspondencias necessárias para todos os codigos recebidos da API
 }
+
+//ESTRUTURA PARA TRATAR DOS DADOS DO XML RESOURCE
+
+// Classe que representa os dados lidos do XML (contido na pasta res/value)
+data class WeatherCondition(
+    val code: Int,
+    val image: String,
+    val description: String
+)

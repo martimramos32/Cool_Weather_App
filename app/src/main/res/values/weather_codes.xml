@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- XML Resource que permite armazenar dados fora do código fonte -->
+<!-- Neste caso específico , estamos a usar Typed Arrays que permitem misturar diferentes tipos de dados dentro de um único array-->
+<!-- Este tipo de abordagem permite realizar traduções deste ficheiro em diversos idiomas, tem uma manutenção mais simples em comparação a código hardcoded bem como permite uma melhor gestão da RAM do dispositivo Android que corre a aplicação -->
+
+<!-- Neste xml resource, estão guardadas as possíveis informações necessárias vindas da  API, que são, o codigo, a imagem e uma pequena descrição da imagem-->
+
+
+<resources>
+    <array name="weather_codes">
+        <item>@array/code_0</item>
+        <item>@array/code_1</item>
+        <item>@array/code_2</item>
+        <item>@array/code_3</item>
+        <item>@array/code_45</item>
+        <item>@array/code_48</item>
+        <item>@array/code_51</item>
+        <item>@array/code_53</item>
+        <item>@array/code_55</item>
+        <item>@array/code_56</item>
+        <item>@array/code_57</item>
+        <item>@array/code_61</item>
+        <item>@array/code_63</item>
+        <item>@array/code_65</item>
+        <item>@array/code_66</item>
+        <item>@array/code_67</item>
+        <item>@array/code_71</item>
+        <item>@array/code_73</item>
+        <item>@array/code_75</item>
+        <item>@array/code_77</item>
+        <item>@array/code_80</item>
+        <item>@array/code_81</item>
+        <item>@array/code_82</item>
+        <item>@array/code_85</item>
+        <item>@array/code_86</item>
+        <item>@array/code_95</item>
+        <item>@array/code_96</item>
+        <item>@array/code_99</item>
+    </array>
+
+    <array name="code_0">
+        <item>0</item>
+        <item>clear_day</item>
+        <item>Céu Limpo</item>
+    </array>
+
+    <array name="code_1">
+        <item>1</item>
+        <item>mostly_clear_day</item>
+        <item>Maioritariamente Limpo</item>
+    </array>
+
+    <array name="code_2">
+        <item>2</item>
+        <item>partly_cloudy_day</item>
+        <item>Parcialmente Nublado</item>
+    </array>
+
+    <array name="code_3">
+        <item>3</item>
+        <item>cloudy</item>
+        <item>Nublado</item>
+    </array>
+
+    <array name="code_45">
+        <item>45</item>
+        <item>fog</item>
+        <item>Nevoeiro</item>
+    </array>
+
+    <array name="code_48">
+        <item>48</item>
+        <item>fog</item>
+        <item>Nevoeiro com Geada</item>
+    </array>
+
+    <array name="code_51">
+        <item>51</item>
+        <item>drizzle</item>
+        <item>Chuvisco Ligeiro</item>
+    </array>
+
+    <array name="code_53">
+        <item>53</item>
+        <item>drizzle</item>
+        <item>Chuvisco Moderado</item>
+    </array>
+
+    <array name="code_55">
+        <item>55</item>
+        <item>drizzle</item>
+        <item>Chuvisco Intenso</item>
+    </array>
+
+    <array name="code_56">
+        <item>56</item>
+        <item>freezing_drizzle</item>
+        <item>Chuvisco Gelado Ligeiro</item>
+    </array>
+
+    <array name="code_57">
+        <item>57</item>
+        <item>freezing_drizzle</item>
+        <item>Chuvisco Gelado Intenso</item>
+    </array>
+
+    <array name="code_61">
+        <item>61</item>
+        <item>rain_light</item>
+        <item>Chuva Ligeira</item>
+    </array>
+
+    <array name="code_63">
+        <item>63</item>
+        <item>rain</item>
+        <item>Chuva Moderada</item>
+    </array>
+
+    <array name="code_65">
+        <item>65</item>
+        <item>rain_heavy</item>
+        <item>Chuva Forte</item>
+    </array>
+
+    <array name="code_66">
+        <item>66</item>
+        <item>freezing_rain_light</item>
+        <item>Chuva Gelada Ligeira</item>
+    </array>
+
+    <array name="code_67">
+        <item>67</item>
+        <item>freezing_rain_heavy</item>
+        <item>Chuva Gelada Forte</item>
+    </array>
+
+    <array name="code_71">
+        <item>71</item>
+        <item>snow_light</item>
+        <item>Neve Ligeira</item>
+    </array>
+
+    <array name="code_73">
+        <item>73</item>
+        <item>snow</item>
+        <item>Neve Moderada</item>
+    </array>
+
+    <array name="code_75">
+        <item>75</item>
+        <item>snow_heavy</item>
+        <item>Neve Forte</item>
+    </array>
+
+    <array name="code_77">
+        <item>77</item>
+        <item>snow</item>
+        <item>Granizo Fino</item>
+    </array>
+
+    <array name="code_80">
+        <item>80</item>
+        <item>rain_light</item>
+        <item>Aguaceiros Ligeiros</item>
+    </array>
+
+    <array name="code_81">
+        <item>81</item>
+        <item>rain</item>
+        <item>Aguaceiros Moderados</item>
+    </array>
+
+    <array name="code_82">
+        <item>82</item>
+        <item>rain_heavy</item>
+        <item>Aguaceiros Fortes</item>
+    </array>
+
+    <array name="code_85">
+        <item>85</item>
+        <item>snow_light</item>
+        <item>Aguaceiros de Neve Ligeiros</item>
+    </array>
+
+    <array name="code_86">
+        <item>86</item>
+        <item>snow_heavy</item>
+        <item>Aguaceiros de Neve Fortes</item>
+    </array>
+
+    <array name="code_95">
+        <item>95</item>
+        <item>tstorm</item>
+        <item>Trovoada Ligeira a Moderada</item>
+    </array>
+
+    <array name="code_96">
+        <item>96</item>
+        <item>tstorm</item>
+        <item>Trovoada com Granizo Ligeiro</item>
+    </array>
+
+    <array name="code_99">
+        <item>99</item>
+        <item>tstorm</item>
+        <item>Trovoada com Granizo Forte</item>
+    </array>
+
+</resources>

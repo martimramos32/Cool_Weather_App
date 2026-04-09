@@ -162,7 +162,8 @@ class MainActivity : AppCompatActivity() {
             windDirValue.text = "${request.current_weather.winddirection}º"
             timeValue.text = currentTime.replace("T", " ")
 
-            val mapt = getWeatherCodeMap() //Criamos o mapa que contém as informações das determinadas correspondencias (code -> imagem)
+            //Utiliza o enumerado hardcoded
+            /*val mapt = getWeatherCodeMap() //Criamos o mapa que contém as informações das determinadas correspondencias (code -> imagem)
             val wCode = mapt.get(request.current_weather.weathercode) //recebe o determinado codigo
 
             val wImage = when (wCode) { //quando um determinado codigo é recebido precisamos de apresentar no display a imagem correta para esse mesmo codigo
@@ -176,6 +177,20 @@ class MainActivity : AppCompatActivity() {
                     if (day) base + "_day" else base + "_night"
                 }
                 else -> wCode?.image //se não for nenhum destes 3 estados, como, por exemplo, nevar, chover ou nevoeiro, apenas retorna a imagem correspondente ao codigo fornecido pela API
+            }*/
+
+            //Utiliza o XML resource criado em vez do enumerado declarado hardcoded no ficheiro WeatherData.kt
+            val mapt = getWeatherCodeMapByXMLResource()
+            // Agora recebemos a ficha completa (WeatherCondition) em vez do enum
+            val weatherCond = mapt.get(request.current_weather.weathercode)
+
+            val wImage = when (weatherCond?.code) {
+                // Usamos os números diretamente (0=Limpo, 1=Quase Limpo, 2=Parcialmente Nublado)
+                0, 1, 2 -> {
+                    val base = weatherCond.image.replace("_day", "").replace("_night", "")
+                    if (day) base + "_day" else base + "_night"
+                }
+                else -> weatherCond?.image
             }
 
             val res = getResources()
@@ -228,5 +243,41 @@ class MainActivity : AppCompatActivity() {
         } else {
             fetchWeatherData(38.76f, -9.12f).start()
         }
+    }
+
+    // Função que lê os recursos XML e constrói o dicionário
+    @SuppressLint("ResourceType")
+    private fun getWeatherCodeMapByXMLResource(): HashMap<Int, WeatherCondition> {
+        val map = HashMap<Int, WeatherCondition>()
+
+        //Vai buscar o "índice" principal ao armazém XML com todos os codigos
+        val weatherArrays = resources.obtainTypedArray(R.array.weather_codes)
+
+        //Lê linha a linha do índice
+        for (i in 0 until weatherArrays.length()) {
+            val idCode = weatherArrays.getResourceId(i, -1)
+
+            if (idCode != -1) {
+                // Obtêm os dados específicos de um determinado código
+                val codeData = resources.obtainTypedArray(idCode)
+
+                // Lê as 3 posições criadas no XML
+                val codeNum = codeData.getInt(0, -1)
+                val imageName = codeData.getString(1) ?: "fog" // 'fog' como imagem de segurança caso a imagem nao seja encontrada
+                val desc = codeData.getString(2) ?: "Desconhecido"
+
+                // Guarda tudo no dicionário
+                map[codeNum] = WeatherCondition(codeNum, imageName, desc)
+
+                // Fecha para poupar memória RAM do telemóvel
+                codeData.recycle()
+            }else{
+                println("O respetivo código não foi encontrado")
+            }
+        }
+
+        // Fecha o índice principal
+        weatherArrays.recycle()
+        return map
     }
 }
